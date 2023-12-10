@@ -2,7 +2,9 @@ const fs = require('fs');
 const path = require('path');
 
 const nanAssign = (value) => {
-  if (!Number.isNaN(+value)) return value;
+  if (!Number.isNaN(+value)) {
+    return value;
+  }
 
   return {
     one: '1',
@@ -17,29 +19,47 @@ const nanAssign = (value) => {
   }[value];
 };
 
+const convertString = (str) => {
+  let inputString = str;
+
+  const output = new Array(2);
+
+  const allMatches = [];
+  let result;
+
+  while (result !== null) {
+    result = /([0-9]|(one|two|three|four|five|six|seven|eight|nine))/.exec(inputString);
+
+    if (result === null) {
+      break;
+    }
+
+    allMatches.push(result[0]);
+    inputString = inputString.slice(result.index + 1);
+  }
+
+  if (allMatches.length > 0) {
+    output[0] = nanAssign(allMatches[0]);
+    allMatches.reverse();
+    output[1] = nanAssign(allMatches[0]);
+  } else {
+    throw Error('No matches found');
+  }
+
+  return Number(output.join(''));
+};
+
 module.exports = () => {
   const input = fs.readFileSync(path.resolve(__dirname, './input.txt'), 'utf8');
 
   const numbers = input
     .split('\n')
     .filter((str) => str.length > 0)
-    .map((str) => {
-      const output = new Array(2);
-
-      const matches = str.match(/([0-9]|one|two|three|four|five|six|seven|eight|nine)/g);
-
-      if (matches) {
-        output[0] = nanAssign(matches[0]);
-        matches.reverse();
-        output[1] = nanAssign(matches[0]);
-      }
-
-      return Number(output.join(''));
-    });
-
-  console.log(numbers);
+    .map(convertString);
 
   const sum = numbers.reduce((acc, cur) => acc + cur, 0);
 
   return sum;
 };
+
+module.exports.convertString = convertString;
