@@ -1,7 +1,7 @@
-const day1 = require('./days/1');
+const days = require('./days');
 
 const [, , day] = process.argv;
-const program = [day1]?.[day - 1];
+const program = days?.[day];
 
 if (program) {
   const output = program();

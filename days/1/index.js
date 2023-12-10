@@ -50,7 +50,7 @@ const convertString = (str) => {
 };
 
 module.exports = () => {
-  const input = fs.readFileSync(path.resolve(__dirname, './input.txt'), 'utf8');
+  const input = fs.readFileSync(path.resolve(__dirname, './data/input.txt'), 'utf8');
 
   const numbers = input
     .split('\n')
